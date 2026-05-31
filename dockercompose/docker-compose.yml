@@ -1,0 +1,45 @@
+version: '3.9'
+services:
+  database:
+    image: mysql:latest
+    container_name: mysql_db
+    restart: always 
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: mydatabase
+      MYSQL_USER: user
+      MYSQL_PASSWORD: userpassword
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - app-network
+  backend:
+    build: ./backend
+    container_name: backend_app
+    restart: always
+    environment:
+      DB_HOST: database
+      DB_USER: user
+      DB_PASSWORD: userpassword
+      DB_NAME: mydatabase
+    depends_on:
+      - database
+    ports:
+      - "5002:5000"
+    networks:
+      - app-network
+  frontend:
+    build: ./frontend
+    container_name: frontend_app
+    restart: always
+    depends_on:
+      - backend
+    ports:
+      - "3000:80"
+    networks:
+      - app-network
+volumes:
+  db_data:
+networks:
+  app-network:
+    driver: bridge
