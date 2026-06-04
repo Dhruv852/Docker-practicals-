@@ -1,0 +1,18 @@
+services:
+  backend:
+    build: ./backend
+    ports:
+      - "5007:5007"
+    depends_on:
+      database:
+        condition: service_healthy
+  database:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: ecommerce_db
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-prootpassword" ]
+      interval: 10s
+      retries: 10
+      timeout: 5s

@@ -1,0 +1,18 @@
+services:
+  backend:
+    build: ./backend
+
+    ports:
+      - "${PORT}:5010"
+
+    environment:
+      - PORT=${PORT}
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
+      - DB_NAME=${DB_NAME}
+
+    depends_on:
+      - mongodb
+
+  mongodb:
+    image: mongo:6
